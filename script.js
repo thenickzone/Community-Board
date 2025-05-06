@@ -24,7 +24,6 @@ var dummyEvents = [
 
 var markers=[];
 var markerCluster; 
-var zoomThreshold= 15;
 
 function smoothZoom(map, targetZoom, currentZoom) {
     var step = (targetZoom - currentZoom) / 10; // Determines the speed of zooming
@@ -40,7 +39,7 @@ function smoothZoom(map, targetZoom, currentZoom) {
     }
 
     var timer = setInterval(stepZoom, 80); // Set the interval for each zoom step
-};
+}
 
 function createSvgMarker(color) {
     return `
@@ -130,9 +129,12 @@ function initMap() {
         map.fitBounds(bounds);
     });
 
-    dummyEvents.forEach(function(event) {
+    dummyEvents.forEach(function(event, index) {
+        // Generate a random color for the marker and event box shadow
+        const markerColor = getRandomColor();
+
         var icon = {
-            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(createSvgMarker(getRandomColor())),
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(createSvgMarker(markerColor)),
             scaledSize: new google.maps.Size(30, 30) // Size of the icon
         };
 
@@ -143,20 +145,44 @@ function initMap() {
             icon: icon
         });
 
-            // Add click listener to the marker
-            marker.addListener('click', function() {
-                smoothZoom(map, 15, map.getZoom());
-                map.setCenter(marker.getPosition());
-                // Optional: Add an info window for each marker
-                var infowindow = new google.maps.InfoWindow({
-                    content: event.details
-                });
+        // Create an info window for the marker
+        var infowindow = new google.maps.InfoWindow({
+            content: `<h4>${event.name}</h4><p>${event.details}</p>`
+        });
 
-                infowindow.open(map, marker);
-                
-            });        
-        
-        markers.push(marker); //store the marker
-     });
+        // Get the corresponding event box
+        var eventBox = document.querySelectorAll('.event-detail-box')[index];
+
+        // Set a default shadow for the event box
+        eventBox.style.boxShadow = '0 0 5px 2px gray';
+
+        // Add hover listener (mouseover) to change the shadow color
+        marker.addListener('mouseover', function() {
+            eventBox.style.boxShadow = `0 0 10px 5px ${markerColor}`;
+            infowindow.open(map, marker);
+        });
+
+        // Reset the shadow color when the mouse leaves the marker
+        marker.addListener('mouseout', function() {
+            eventBox.style.boxShadow = '0 0 5px 2px gray';
+            infowindow.close();
+        });
+
+        // Add click listener for zoom effect
+        marker.addListener('click', function () {
+            // Center the map around the clicked marker
+            map.setCenter(marker.getPosition());
+
+            // Get the current zoom level
+            const currentZoom = map.getZoom();
+
+            // Only zoom in if the current zoom level is less than 15
+            if (currentZoom < 15) {
+                smoothZoom(map, 15, currentZoom);
+            }
+        });
+
+        markers.push(marker); // Store the marker
+    });
 
 }
