@@ -46,3 +46,49 @@ footer {
     text-align: center;
     padding: 1rem 0;
 }
+
+#event-details-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+
+.event-detail-box {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    width: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+
+#map {
+    height: 800px;
+    width: 100%; /* Ensures it fills the container taking into account the padding */
+}
+
+#map-container {
+    width: 95%;
+    padding: 1pt;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15); /* Optional: Adds a subtle shadow for depth */
+    margin: 20px auto; /* Optional: Centers the map and adds some margin around it */
+    border: 2px solid #000000; /* Optional: Adds a border around the map */
+}
+
+#search-box {
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    font-size: 14px;
+    height: 32px;
+    margin-top: 10px;
+    padding: 0 12px;
+    text-overflow: ellipsis;
+    width: 300px;
+}
